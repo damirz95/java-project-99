@@ -1,0 +1,17 @@
+logging:
+  level:
+    root: WARN
+
+spring:
+  application:
+    name: app
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  output:
+    ansi:
+      enabled: always
+
+server:
+  address: 0.0.0.0
