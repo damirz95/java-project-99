@@ -18,6 +18,8 @@ WORKDIR /app
 
 COPY ./ .
 
+RUN make build
+
 ENV JAVA_OPTS "-Xmx512M -Xms512M"
 EXPOSE 8080
 
