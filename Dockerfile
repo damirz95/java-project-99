@@ -19,7 +19,6 @@ WORKDIR /backend
 COPY gradle gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
-COPY gradlew .
 
 RUN ./gradlew --no-daemon dependencies
 
