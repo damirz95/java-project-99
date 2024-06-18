@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:project
+    username: "admin"
+    password: "123"
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      # Указываем путь, по которому будет открываться консоль
+      settings:
+        web-allow-others: true
