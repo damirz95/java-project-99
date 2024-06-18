@@ -22,7 +22,7 @@ reload-classes:
 	./gradlew -t classes
 
 start-prod:
-	./gradlew bootRun --args='--spring.profiles.active=prod'
+	./gradlew bootRun --args='--spring.profiles.active=production'
 
 install:
 	./gradlew installDist

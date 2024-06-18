@@ -6,4 +6,4 @@ COPY / .
 
 RUN ./gradlew installDist
 
-CMD ./build/install/app/bin/app
+CMD ./gradlew bootRun --args='--spring.profiles.active=production'
