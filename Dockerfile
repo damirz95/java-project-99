@@ -1,34 +1,24 @@
-FROM node:20.6.1 AS frontend
-
-WORKDIR /frontend
-
-COPY frontend/package*.json .
-
-RUN npm ci
-
-COPY frontend /frontend
-
-RUN npm run build
-
 FROM eclipse-temurin:21-jdk
 
-RUN apt-get update && apt-get install -yq make unzip
+ARG GRADLE_VERSION=8.7
 
-WORKDIR /backend
+RUN apt-get update && apt-get install -yq unzip
 
-COPY gradle gradle
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
+RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
+    && unzip gradle-${GRADLE_VERSION}-bin.zip \
+    && rm gradle-${GRADLE_VERSION}-bin.zip
 
-RUN ./gradlew --no-daemon dependencies
+ENV GRADLE_HOME=/opt/gradle
 
-COPY src src
+RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
 
-COPY --from=frontend /frontend/dist /backend/src/main/resources/static
+ENV PATH=$PATH:$GRADLE_HOME/bin
 
-RUN ./gradlew --no-daemon build
+WORKDIR /app
+
+COPY ./ .
 
 ENV JAVA_OPTS "-Xmx512M -Xms512M"
 EXPOSE 8080
 
-CMD java -jar build/libs/HexletSpringBlog-1.0-SNAPSHOT.jar
+CMD java -jar build/libs/src-0.0.1-SNAPSHOT.jar
