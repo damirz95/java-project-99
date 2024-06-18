@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY ./ .
 
-RUN gradlew clean build
+RUN gradle clean build
 
 ENV JAVA_OPTS "-Xmx512M -Xms512M"
 EXPOSE 8080
