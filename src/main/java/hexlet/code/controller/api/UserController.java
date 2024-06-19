@@ -1,8 +1,8 @@
 package hexlet.code.controller.api;
 
-import hexlet.code.DTO.UserCreateDTO;
-import hexlet.code.DTO.UserUpdateDTO;
-import hexlet.code.DTO.UserDTO;
+import hexlet.code.DTO.UsersDTO.UserCreateDTO;
+import hexlet.code.DTO.UsersDTO.UserUpdateDTO;
+import hexlet.code.DTO.UsersDTO.UserDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
@@ -78,6 +78,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long id) {
         userRepository.deleteById(id);
     }

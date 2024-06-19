@@ -1,8 +1,8 @@
 package hexlet.code.service;
 
-import hexlet.code.DTO.UserCreateDTO;
-import hexlet.code.DTO.UserDTO;
-import hexlet.code.DTO.UserUpdateDTO;
+import hexlet.code.DTO.UsersDTO.UserCreateDTO;
+import hexlet.code.DTO.UsersDTO.UserDTO;
+import hexlet.code.DTO.UsersDTO.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;

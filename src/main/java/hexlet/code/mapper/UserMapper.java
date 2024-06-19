@@ -1,8 +1,8 @@
 package hexlet.code.mapper;
 
-import hexlet.code.DTO.UserCreateDTO;
-import hexlet.code.DTO.UserUpdateDTO;
-import hexlet.code.DTO.UserDTO;
+import hexlet.code.DTO.UsersDTO.UserCreateDTO;
+import hexlet.code.DTO.UsersDTO.UserUpdateDTO;
+import hexlet.code.DTO.UsersDTO.UserDTO;
 import hexlet.code.model.User;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
