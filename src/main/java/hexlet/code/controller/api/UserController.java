@@ -9,7 +9,7 @@ import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,16 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/users")
+@RequestMapping(path = "/api")
+@AllArgsConstructor
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserService userService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final UserService userService;
 
-    @GetMapping(path = "")
+    @GetMapping(path = "/users")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
         var users = userRepository.findAll();
@@ -46,7 +44,7 @@ public class UserController {
                 .body(result);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDTO> show(@PathVariable Long id) {
         User user = userRepository.findById(id)
@@ -56,7 +54,7 @@ public class UserController {
                 .body(result);
     }
 
-    @PostMapping(path = "")
+    @PostMapping(path = "/users")
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO dto) {
         var user = userMapper.map(dto);
         userRepository.save(user);
@@ -65,7 +63,7 @@ public class UserController {
                 .body(result);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         var user = userRepository.findById(id)

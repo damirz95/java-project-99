@@ -6,7 +6,7 @@ setup:
 frontend:
 	make -C frontend start
 
-backend:
+app:
 	./gradlew bootRun --args='--spring.profiles.active=dev'
 
 clean:
@@ -36,8 +36,8 @@ lint:
 test:
 	./gradlew test
 
-# report:
-# 	./gradlew jacocoTestReport
+report:
+	./gradlew jacocoTestReport
 
 update-js-deps:
 	npx ncu -u

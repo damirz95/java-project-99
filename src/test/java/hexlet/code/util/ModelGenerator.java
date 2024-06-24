@@ -1,5 +1,7 @@
 package hexlet.code.util;
 
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import jakarta.annotation.PostConstruct;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 public class ModelGenerator {
     private Model<User> userModel;
     private Model<TaskStatus> taskStatusModel;
+    private Model<Task> taskModel;
+    private Model<Label> labelModel;
 
     @Autowired
     private Faker faker;
@@ -34,6 +38,17 @@ public class ModelGenerator {
                 .ignore(Select.field(TaskStatus::getId))
                 .supply(Select.field(TaskStatus::getName), () -> faker.name().title())
                 .supply(Select.field(TaskStatus::getSlug), () -> faker.name().title())
+                .toModel();
+
+        taskModel = Instancio.of(Task.class)
+                .ignore(Select.field(Task::getId))
+                .supply(Select.field(Task::getIndex), () -> faker.number().randomDigitNotZero())
+                .supply(Select.field(Task::getDescription), () -> faker.gameOfThrones().character())
+                .toModel();
+
+        labelModel = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .supply(Select.field(Label::getName), () -> faker.name().firstName())
                 .toModel();
     }
 }

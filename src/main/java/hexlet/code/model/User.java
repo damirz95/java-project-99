@@ -9,8 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,22 +26,29 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
+@ToString(includeFieldNames = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 public class User implements UserDetails, BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @ToString.Include
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(unique = true)
     @Email
+    @ToString.Include
     private String email;
 
     @Column(nullable = false)
     private String passwordDigest;
 
+    @ToString.Include
     private String firstName;
 
+    @ToString.Include
     private String lastName;
 
     @CreatedDate

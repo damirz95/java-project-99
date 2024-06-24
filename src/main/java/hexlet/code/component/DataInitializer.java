@@ -1,8 +1,10 @@
 package hexlet.code.component;
 
 import hexlet.code.DTO.UsersDTO.UserCreateDTO;
+import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
@@ -22,6 +24,8 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
     @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
     private UserService userService;
     @Autowired
     private Faker faker;
@@ -33,6 +37,7 @@ public class DataInitializer implements ApplicationRunner {
         userCreate.setEmail(email);
         userCreate.setPassword("qwerty");
         userService.createAndReturnUser(userCreate);
+
         var tsStatus = new TaskStatus();
         tsStatus.setName("Draft");
         tsStatus.setSlug("draft");
@@ -53,5 +58,14 @@ public class DataInitializer implements ApplicationRunner {
         tsStatus5.setName("Published");
         tsStatus5.setSlug("published");
         taskStatusRepository.save(tsStatus5);
+        var user = new User();
+        user.setEmail("mail@mail.com");
+        user.setPasswordDigest("qwertty");
+        userRepository.save(user);
+        var task = new Task();
+        task.setName(tsStatus.getName());
+        task.setStatus(tsStatus);
+        task.setAssignee(user);
+        taskRepository.save(task);
     }
 }
