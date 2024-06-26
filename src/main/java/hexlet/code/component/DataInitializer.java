@@ -1,9 +1,12 @@
 package hexlet.code.component;
 
 import hexlet.code.DTO.UsersDTO.UserCreateDTO;
+import hexlet.code.mapper.UserMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -15,18 +18,23 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
 public class DataInitializer implements ApplicationRunner {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private UserService userService;
+
+    private final UserRepository userRepository;
+    private final TaskStatusRepository taskStatusRepository;
+    private final TaskRepository taskRepository;
+    private final LabelRepository labelRepository;
+    private final UserService userService;
+    private final UserMapper userMapper;
+
     @Autowired
     private Faker faker;
 
@@ -38,34 +46,42 @@ public class DataInitializer implements ApplicationRunner {
         userCreate.setPassword("qwerty");
         userService.createAndReturnUser(userCreate);
 
-        var tsStatus = new TaskStatus();
-        tsStatus.setName("Draft");
-        tsStatus.setSlug("draft");
-        taskStatusRepository.save(tsStatus);
-        var tsStatus2 = new TaskStatus();
-        tsStatus2.setName("ToReview");
-        tsStatus2.setSlug("to_review");
-        taskStatusRepository.save(tsStatus2);
-        var tsStatus3 = new TaskStatus();
-        tsStatus3.setName("ToBeFixed");
-        tsStatus3.setSlug("to_be_fixed");
-        taskStatusRepository.save(tsStatus3);
-        var tsStatus4 = new TaskStatus();
-        tsStatus4.setName("ToPublish");
-        tsStatus4.setSlug("to_publish");
-        taskStatusRepository.save(tsStatus4);
-        var tsStatus5 = new TaskStatus();
-        tsStatus5.setName("Published");
-        tsStatus5.setSlug("published");
-        taskStatusRepository.save(tsStatus5);
-        var user = new User();
-        user.setEmail("mail@mail.com");
-        user.setPasswordDigest("qwertty");
-        userRepository.save(user);
-        var task = new Task();
-        task.setName(tsStatus.getName());
-        task.setStatus(tsStatus);
-        task.setAssignee(user);
-        taskRepository.save(task);
+
+        Map<String, String> statusMap = new HashMap<>();
+
+        statusMap.put("Draft", "draft");
+        statusMap.put("ToReview", "to_review");
+        statusMap.put("ToBeFixed", "to_be_fixed");
+        statusMap.put("ToPublish", "to_publish");
+        statusMap.put("Published", "published");
+        for(String key: statusMap.keySet()) {
+            var tsStatus = new TaskStatus();
+            tsStatus.setName(key);
+            tsStatus.setSlug(statusMap.get(key));
+            taskStatusRepository.save(tsStatus);
+        }
+
+        List<String> labelsList = new ArrayList<>();
+        labelsList.add("bug");
+        labelsList.add("feature");
+
+        for(var label : labelsList) {
+            var tsLabel = new Label();
+            tsLabel.setName(label);
+            labelRepository.save(tsLabel);
+        }
+
+
+        var statuses = taskStatusRepository.findAll();
+        var labels = labelRepository.findAll();
+        for(int i =0; i < 5; i++) {
+            var task = new Task();
+            task.setStatus(statuses.get(i));
+            task.setName(faker.name().name());
+            task.setDescription(faker.lorem().paragraph());
+            task.setLabels(Set.of(labels.get(0)));
+            task.setAssignee(userRepository.findByEmail("hexlet@example.com").get());
+            taskRepository.save(task);
+        }
     }
 }

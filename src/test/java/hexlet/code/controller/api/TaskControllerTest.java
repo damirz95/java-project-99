@@ -1,11 +1,7 @@
 package hexlet.code.controller.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.DTO.TasksDTO.TaskCreateDTO;
 import hexlet.code.mapper.TaskMapper;
-import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -30,15 +26,14 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -136,6 +131,28 @@ public class TaskControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
         System.out.println(result.getResponse().getContentAsString());
+    }
+    @Test
+    public void updateTest() throws Exception {
+        int[] label = {1};
+        var data = new HashMap<>();
+        data.put("index", 4);
+        data.put("assignee_id", 1);
+        data.put("title", "New title name");
+        data.put("content", "test content2");
+        data.put("status", "published");
+        data.put("taskLabelIds", label);
+
+        var request = put("/api/tasks/" + testTask.getId()).with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+
+        var task = taskRepository.findById(testTask.getId()).get();
+
+        assertThat(task.getName()).isEqualTo("New title name");
     }
 
 }

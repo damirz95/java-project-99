@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 public class TaskSpecification {
     public Specification build(TaskParamsDTO dto) {
         return withTitleCount(dto.getTitleCont())
-                .and(withAssigneeId(dto.getAssigneeId()));
+                .and(withAssigneeId(dto.getAssigneeId()))
+                .and(withStatus(dto.getStatus()))
+                .and(withLabelId(dto.getLabelId()));
     }
 
     public Specification<Task> withTitleCount(String titleCount) {
@@ -20,12 +22,12 @@ public class TaskSpecification {
     public Specification<Task> withAssigneeId(Long assigneeId) {
         return (root, query, cb) -> assigneeId == null
                 ? cb.conjunction()
-                : cb.equal(root.get("assigne").get("id"), assigneeId);
+                : cb.equal(root.get("assignee").get("id"), assigneeId);
     }
     private Specification<Task> withStatus(String status) {
         return (root, query, cb) -> status == null
                 ? cb.conjunction()
-                : cb.equal(root.get("taskStatus").get("slug"), status);
+                : cb.equal(root.get("status").get("slug"), status);
     }
     private Specification<Task> withLabelId(Long labelId) {
         return (root, query, cb) -> labelId == null

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,7 +40,7 @@ public class TaskController {
         Specification specification = taskSpecification.build(dto);
         List<Task> tasks = taskRepository.findAll(specification);
         List<TaskDTO> result = tasks.stream()
-                .map(v -> taskMapper.map(v))
+                .map(taskMapper::map)
                 .toList();
         System.out.println(result);
         return ResponseEntity.ok()
@@ -70,6 +71,7 @@ public class TaskController {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
         taskMapper.update(dto, task);
+        taskRepository.save(task);
         var result = taskMapper.map(task);
         return ResponseEntity.ok()
                 .body(result);

@@ -8,10 +8,12 @@ import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
+import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +32,7 @@ import java.util.List;
 public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserUtils userUtils;
     private final UserService userService;
 
     @GetMapping(path = "/users")
@@ -65,6 +68,7 @@ public class UserController {
 
     @PutMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@userUtils.isAuthor(#id)")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
@@ -75,8 +79,9 @@ public class UserController {
                 .body(result);
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userUtils.isAuthor(#id)")
     public void destroy(@PathVariable Long id) {
         userRepository.deleteById(id);
     }

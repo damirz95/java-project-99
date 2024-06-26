@@ -6,6 +6,7 @@ import hexlet.code.DTO.TasksDTO.TaskUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,9 @@ import java.util.stream.Collectors;
 public abstract class TaskMapper {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+    @Autowired
+    private LabelRepository labelRepository;
+
     @Mapping(target = "status", source = "taskStatus", qualifiedByName = "statusSlug")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "labels", source = "taskLabelIds")
@@ -37,6 +42,9 @@ public abstract class TaskMapper {
     @Mapping(target = "labelsId", source = "labels", qualifiedByName = "modelToDto")
     public abstract TaskDTO map(Task model);
 
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "dtoToModel")
+    @Mapping(target = "status", source = "taskStatus", qualifiedByName = "statusSlug")
+    @Mapping(target = "assignee.id", source = "assigneeId")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 
     @Named("modelToDto")
@@ -47,8 +55,11 @@ public abstract class TaskMapper {
         var collectLabel =  model.stream()
                 .map(v -> v.getId())
                 .collect(Collectors.toSet());
-        System.out.println(collectLabel);
         return collectLabel;
+    }
+    @Named("dtoToModel")
+    public Set<Label> dtoToModel(Set<Long> model) {
+        return new HashSet<>(labelRepository.findByIdIn(model));
     }
     @Named("statusSlug")
     public TaskStatus statusSlugToModel(String slug) {

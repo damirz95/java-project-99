@@ -54,7 +54,9 @@ public class TaskStatusController {
     @PostMapping(path = "")
     public ResponseEntity<TaskStatusDTO> create(@Valid @RequestBody TaskStatusCreateDTO data) {
         var tsStatus = taskStatusMapper.map(data);
+
         taskStatusRepository.save(tsStatus);
+
         var result = taskStatusMapper.map(tsStatus);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(result);
@@ -66,6 +68,7 @@ public class TaskStatusController {
         var tsStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found"));
         taskStatusMapper.update(data, tsStatus);
+        taskStatusRepository.save(tsStatus);
         var result = taskStatusMapper.map(tsStatus);
         return ResponseEntity.ok()
                 .body(result);

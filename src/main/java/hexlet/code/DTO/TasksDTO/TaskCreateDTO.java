@@ -19,7 +19,7 @@ public class TaskCreateDTO {
 
     @NotBlank
     @JsonProperty("title")
-    private String title;
+    private String name;
 
     @JsonProperty("content")
     private JsonNullable<String> description;

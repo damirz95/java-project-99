@@ -26,7 +26,7 @@ public class TaskDTO {
     @JsonProperty("title")
     private String name;
     @JsonProperty("content")
-    private String content;
+    private String description;
     @JsonProperty("status")
     private String status;
     @JsonProperty("taskLabelIds")

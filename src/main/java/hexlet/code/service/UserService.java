@@ -6,6 +6,7 @@ import hexlet.code.DTO.UsersDTO.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,13 +16,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsManager {
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder encoder;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

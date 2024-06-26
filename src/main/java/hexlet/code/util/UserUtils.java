@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class UserUtils {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -22,5 +21,11 @@ public class UserUtils {
         var email = authentication.getName();
         return userRepository.findByEmail(email).
                 orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public boolean isAuthor(long userId) {
+        var userEmail = userRepository.findById(userId).get().getEmail();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userEmail.equals(authentication.getName());
     }
 }
