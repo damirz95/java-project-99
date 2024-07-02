@@ -10,6 +10,6 @@ COPY . .
 
 RUN ./gradlew installDist
 
-CMD ./build/install/app/bin/app
+CMD make start-prod
 
 EXPOSE 8080
