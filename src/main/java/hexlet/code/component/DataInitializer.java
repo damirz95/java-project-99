@@ -5,7 +5,6 @@ import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -54,7 +53,7 @@ public class DataInitializer implements ApplicationRunner {
         statusMap.put("ToBeFixed", "to_be_fixed");
         statusMap.put("ToPublish", "to_publish");
         statusMap.put("Published", "published");
-        for(String key: statusMap.keySet()) {
+        for (String key: statusMap.keySet()) {
             var tsStatus = new TaskStatus();
             tsStatus.setName(key);
             tsStatus.setSlug(statusMap.get(key));
@@ -65,7 +64,7 @@ public class DataInitializer implements ApplicationRunner {
         labelsList.add("bug");
         labelsList.add("feature");
 
-        for(var label : labelsList) {
+        for (var label : labelsList) {
             var tsLabel = new Label();
             tsLabel.setName(label);
             labelRepository.save(tsLabel);
@@ -74,7 +73,7 @@ public class DataInitializer implements ApplicationRunner {
 
         var statuses = taskStatusRepository.findAll();
         var labels = labelRepository.findAll();
-        for(int i =0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             var task = new Task();
             task.setStatus(statuses.get(i));
             task.setName(faker.name().name());

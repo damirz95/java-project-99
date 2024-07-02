@@ -8,6 +8,7 @@ plugins {
 	id("io.freefair.lombok") version "8.6"
 	id("org.springframework.boot") version "3.3.0"
 	id("io.spring.dependency-management") version "1.1.5"
+	id ("io.sentry.jvm.gradle") version "4.8.0"
 }
 
 group = "hexlet.code"
@@ -15,6 +16,22 @@ version = "0.0.1-SNAPSHOT"
 
 application {
 	mainClass.set("hexlet.code.AppApplication")
+}
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+tasks.sentryBundleSourcesJava {
+	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
+}
+sentry {
+	includeSourceContext = true
+
+	org = "home-aq3"
+	projectName = "java-spring-boot"
+	authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 java {
@@ -59,6 +76,7 @@ dependencies {
 
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	implementation("org.springdoc:springdoc-openapi-ui:1.8.0")
+	implementation ("io.sentry:sentry-spring-boot-starter-jakarta:7.11.0")
 }
 
 tasks.test {

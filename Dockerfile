@@ -13,8 +13,3 @@ RUN ./gradlew installDist
 CMD ./build/install/app/bin/app
 
 EXPOSE 8080
-
-docker pull swaggerapi/swagger-ui
-docker run -p 80:8080 swaggerapi/swagger-ui
-
-
