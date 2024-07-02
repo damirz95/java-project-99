@@ -1,5 +1,5 @@
 spring:
   datasource:
     url: jdbc:postgresql://${HOST}:${DB_PORT}/${DATABASE}?password=${PASSWORD}&user=${USERNAME}
-    username: {USERNAME}
+    username: ${USERNAME}
     password: ${PASSWORD}
