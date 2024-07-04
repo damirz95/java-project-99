@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.DTO.UsersDTO.UserCreateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
@@ -137,12 +138,15 @@ public class UsersControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
+        var test = userRepository.findByEmail(testUser.getEmail()).get();
+
         var data = new HashMap<>();
         data.put("email", "example@gmail.com");
         data.put("password", "wsxedc");
 
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
 
-        var request = put("/api/users/" + testUser.getId())
+        var request = put("/api/users/" + test.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
