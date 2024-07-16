@@ -4,14 +4,10 @@ import hexlet.code.DTO.TasksDTO.TaskCreateDTO;
 import hexlet.code.DTO.TasksDTO.TaskDTO;
 import hexlet.code.DTO.TasksDTO.TaskParamsDTO;
 import hexlet.code.DTO.TasksDTO.TaskUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.TaskMapper;
-import hexlet.code.model.Task;
 import hexlet.code.repository.TaskRepository;
-import hexlet.code.specification.TaskSpecification;
+import hexlet.code.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,58 +23,49 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/tasks")
+@RequestMapping(path = "/api")
 @AllArgsConstructor
 public class TaskController {
     private final TaskRepository taskRepository;
-    private final TaskMapper taskMapper;
-    private final TaskSpecification taskSpecification;
+    private final TaskService taskService;
 
-    @GetMapping(path = "")
+    @GetMapping(path = "/tasks")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO dto) {
-        Specification specification = taskSpecification.build(dto);
-        List<Task> tasks = taskRepository.findAll(specification);
-        List<TaskDTO> result = tasks.stream()
-                .map(taskMapper::map)
-                .toList();
-        System.out.println(result);
+        var result = taskService.getAll(dto);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
                 .body(result);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TaskDTO> show(@PathVariable Long id) {
-        var task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
-        var result = taskMapper.map(task);
+        var result = taskService.findById(id);
         return ResponseEntity.ok()
                 .body(result);
     }
 
-    @PostMapping(path = "")
-    public ResponseEntity<TaskDTO> create(@Valid @RequestBody TaskCreateDTO dto) {
-        var task = taskMapper.map(dto);
-        taskRepository.save(task);
-        var result = taskMapper.map(task);
+    @PostMapping(path = "/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TaskDTO> create(@Valid @RequestBody TaskCreateDTO data) {
+        var result = taskService.create(data);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(result);
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<TaskDTO> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO dto) {
-        var task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
-        taskMapper.update(dto, task);
-        taskRepository.save(task);
-        var result = taskMapper.map(task);
+    @PutMapping(path = "/tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<TaskDTO> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO data) {
+        var result = taskService.update(id, data);
         return ResponseEntity.ok()
                 .body(result);
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable Long id) {
+    public ResponseEntity<Void> destroy(@PathVariable Long id) {
         taskRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -9,6 +9,9 @@ frontend:
 app:
 	./gradlew bootRun --args='--spring.profiles.active=dev'
 
+app2:
+	./gradlew bootRun --args='--spring.profiles.active=dev2'
+
 clean:
 	./gradlew clean
 

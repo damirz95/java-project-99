@@ -35,4 +35,6 @@ public class Label implements BaseEntity {
     @CreatedDate
     private LocalDate createdAt;
 
+    //TODO Переорпеделить Equals and HashCode
+    //TODO Добавить двунаправленную связь(опционально)
 }

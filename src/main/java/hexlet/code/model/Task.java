@@ -9,6 +9,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -40,10 +41,12 @@ public class Task implements BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
+    @ManyToOne //TODO Проверить Базу данных на доп.таблицы связей, если есть использовать аннатацию JoinColumn
+    @JoinColumn(name = "taskStatuses_Id")
     private TaskStatus status;
 
-    @ManyToOne
+    @ManyToOne //TODO Проверить Базу данных на доп.таблицы связей, если есть использовать аннатацию JoinColumn
+    @JoinColumn(name = "users_id")
     private User assignee;
 
     @CreatedDate
@@ -51,4 +54,5 @@ public class Task implements BaseEntity {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Label> labels = new HashSet<>();
+
 }

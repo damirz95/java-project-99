@@ -27,8 +27,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Set;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -108,8 +110,15 @@ public class TaskControllerTest {
         taskRepository.save(testTask);
 
         var request = get("/api/tasks/" + testTask.getId()).with(token);
-        mockMvc.perform(request)
-                .andExpect(status().isOk());
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+        //TODO Сравинить таски из бд и контроллера
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).and(
+                v -> v.node("title").isEqualTo(testTask.getName()),
+                v -> v.node("content").isEqualTo(testTask.getDescription())
+        );
     }
 
     @Test
@@ -126,11 +135,16 @@ public class TaskControllerTest {
         var request = post("/api/tasks").with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
-        System.out.println(om.writeValueAsString(data));
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+        var task = taskRepository.findByName("New title").get();
+
+        assertThat(task.getName()).isEqualTo("New title");
+        assertThat(task.getDescription()).isEqualTo("test content");
+        assertThat(task.getAssignee().getId()).isEqualTo(2);
+        assertThat(task.getStatus().getSlug()).isEqualTo("draft");
     }
     @Test
     public void updateTest() throws Exception {
@@ -153,6 +167,18 @@ public class TaskControllerTest {
         var task = taskRepository.findById(testTask.getId()).get();
 
         assertThat(task.getName()).isEqualTo("New title name");
+        assertThat(task.getDescription()).isEqualTo("test content2");
+        assertThat(task.getAssignee().getId()).isEqualTo(1);
+        assertThat(task.getStatus().getSlug()).isEqualTo("published");
+
     }
 
+    @Test
+    public void deleteTest() throws Exception {
+        var request = delete("/api/tasks/" + testTask.getId()).with(token);
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        assertThat(taskRepository.findById(testTask.getId())).isNotPresent();
+    }
 }

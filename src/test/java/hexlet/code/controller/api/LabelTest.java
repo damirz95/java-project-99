@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,5 +102,14 @@ public class LabelTest {
         var label = labelRepository.findById(testLabel.getId()).get();
 
         assertThat(label.getName()).isEqualTo("exampleName");
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        var request = delete("/api/labels/" + testLabel.getId()).with(token);
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        assertThat(labelRepository.findByName(testLabel.getName())).isNotPresent();
     }
 }

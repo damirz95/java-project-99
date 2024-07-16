@@ -3,12 +3,8 @@ package hexlet.code.controller.api;
 import hexlet.code.DTO.UsersDTO.UserCreateDTO;
 import hexlet.code.DTO.UsersDTO.UserUpdateDTO;
 import hexlet.code.DTO.UsersDTO.UserDTO;
-import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
-import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,37 +27,29 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final UserUtils userUtils;
     private final UserService userService;
 
     @GetMapping(path = "/users")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
-        var users = userRepository.findAll();
-        var result = users.stream()
-                .map(userMapper::map)
-                .toList();
+        var result = userService.getAll();
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(users.size()))
+                .header("X-Total-Count", String.valueOf(result.size()))
                 .body(result);
     }
 
     @GetMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDTO> show(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        UserDTO result = userMapper.map(user);
+        var result = userService.findById(id);
         return ResponseEntity.ok()
                 .body(result);
     }
 
     @PostMapping(path = "/users")
-    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO dto) {
-        var user = userMapper.map(dto);
-        userRepository.save(user);
-        var result = userMapper.map(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO data) {
+        var result = userService.create(data);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(result);
     }
@@ -69,12 +57,8 @@ public class UserController {
     @PutMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@userUtils.isAuthor(#id)")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        userMapper.update(dto, user);
-        userRepository.save(user);
-        var result = userMapper.map(user);
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO data) {
+        var result = userService.update(id, data);
         return ResponseEntity.ok()
                 .body(result);
     }

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,6 +77,9 @@ public class TaskStatusControllerTest {
         mockMvc.perform(get("/api/task_statuses/" + testStatusTask.getId()).with(jwt()))
                 .andExpect(status().isOk());
 
+        var status = taskStatusRepository.findById(testStatusTask.getId()).get();
+        assertThat(status.getSlug()).isEqualTo(testStatusTask.getSlug());
+
     }
     @Test
     public void testCreate() throws Exception {
@@ -115,5 +119,14 @@ public class TaskStatusControllerTest {
 
         assertThat(status.getName()).isEqualTo(testStatusTask.getName());
         assertThat(status.getSlug()).isEqualTo(testStatusTask.getSlug());
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        var request = delete("/api/task_statuses/" + testStatusTask.getId()).with(token);
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        assertThat(taskStatusRepository.findById(testStatusTask.getId())).isNotPresent();
     }
 }
