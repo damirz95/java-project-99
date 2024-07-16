@@ -5,3 +5,14 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/bc66dba08f1bdaddb571/maintainability)](https://codeclimate.com/github/damirz95/java-project-99/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/bc66dba08f1bdaddb571/test_coverage)](https://codeclimate.com/github/damirz95/java-project-99/test_coverage)
 ## Task Manager
+
+#### Task Manager – task management system.
+#### It allows you to set tasks, assign performers and change their statuses. Registration and authentication are required to work with the system.
+#### The task manager allows you to track the status of a task and who it is assigned to with the ability to edit
+
+```text
+The website written in the spring web framework.
+With the possibility of authentication and authorization.
+Edit tasks, statuses and filters.
+```
+
