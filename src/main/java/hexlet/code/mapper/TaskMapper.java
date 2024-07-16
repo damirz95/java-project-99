@@ -73,7 +73,7 @@ public abstract class TaskMapper {
 
     @Named("userNull")
     public User userNull(Long id) {
-        if(id == null) {
+        if (id == null) {
             return null;
         } else {
             return userRepository.findById(id).orElse(null);

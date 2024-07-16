@@ -41,11 +41,11 @@ public class Task implements BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne(cascade = CascadeType.MERGE) //TODO Проверить Базу данных на доп.таблицы связей, если есть использовать аннатацию JoinColumn
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "taskStatuses_id")
     private TaskStatus status;
 
-    @ManyToOne(cascade = CascadeType.MERGE) //TODO Проверить Базу данных на доп.таблицы связей, если есть использовать аннатацию JoinColumn
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "users_id")
     private User assignee;
 
