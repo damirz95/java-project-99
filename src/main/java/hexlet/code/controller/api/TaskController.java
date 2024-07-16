@@ -57,6 +57,8 @@ public class TaskController {
     @PutMapping(path = "/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TaskDTO> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO data) {
+        System.out.println("update start");
+        System.out.println();
         var result = taskService.update(id, data);
         return ResponseEntity.ok()
                 .body(result);
