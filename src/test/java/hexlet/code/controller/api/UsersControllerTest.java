@@ -150,6 +150,7 @@ public class UsersControllerTest {
 
         var user = userRepository.findById(testUser.getId()).get();
         assertThat(user.getEmail()).isEqualTo(("example@gmail.com"));
+        System.out.println(user.getFirstName() + "___" + testUser.getFirstName());
         assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
         assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
         //TODO Добавить еще 2 проверки
