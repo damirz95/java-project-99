@@ -26,7 +26,6 @@ public class LabelController {
     private final LabelService labelService;
 
     @GetMapping(path = "/labels")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<LabelDTO>> index() {
         var result = labelService.getAll();
         return ResponseEntity.ok()
@@ -36,19 +35,14 @@ public class LabelController {
 
     @GetMapping(path = "/labels/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<LabelDTO> show(@PathVariable Long id) {
-        var result = labelService.findById(id);
-
-        return ResponseEntity.ok()
-                .body(result);
+    public LabelDTO show(@PathVariable Long id) {
+        return labelService.findById(id);
     }
 
     @PostMapping(path = "/labels")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LabelDTO> create(@Valid @RequestBody LabelCreateDTO data) {
-        var result = labelService.create(data);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(result);
+    public LabelDTO create(@Valid @RequestBody LabelCreateDTO data) {
+        return labelService.create(data);
     }
     @PutMapping(path = "/labels/{id}")
     @ResponseStatus(HttpStatus.OK)

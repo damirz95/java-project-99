@@ -30,7 +30,6 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping(path = "/tasks")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO dto) {
         var result = taskService.getAll(dto);
         return ResponseEntity.ok()
@@ -40,34 +39,28 @@ public class TaskController {
 
     @GetMapping(path = "/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TaskDTO> show(@PathVariable Long id) {
-        var result = taskService.findById(id);
-        return ResponseEntity.ok()
-                .body(result);
+    public TaskDTO show(@PathVariable Long id) {
+        return taskService.findById(id);
+
     }
 
     @PostMapping(path = "/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TaskDTO> create(@Valid @RequestBody TaskCreateDTO data) {
-        var result = taskService.create(data);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(result);
+    public TaskDTO create(@Valid @RequestBody TaskCreateDTO data) {
+        return taskService.create(data);
     }
 
     @PutMapping(path = "/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TaskDTO> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO data) {
+    public TaskDTO update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO data) {
         System.out.println("update start");
         System.out.println();
-        var result = taskService.update(id, data);
-        return ResponseEntity.ok()
-                .body(result);
+        return taskService.update(id, data);
     }
 
     @DeleteMapping(path = "/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> destroy(@PathVariable Long id) {
+    public void destroy(@PathVariable Long id) {
         taskRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

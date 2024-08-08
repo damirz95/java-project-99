@@ -14,5 +14,16 @@
 The website written in the spring web framework.
 With the possibility of authentication and authorization.
 Edit tasks, statuses and filters.
-```
 
+For authorization
+Username: hexlet@example.com
+Password: qwerty
+```
+-[Public access](https://java-project-99-te1x.onrender.com/) on a free server from Render
+## Preview
+![main page](/preview/img1.png "main page")
+![dashboard page](/preview/img2.png "dashboard page")
+![tasks page](/preview/img3.png "tasks page")
+![users page](/preview/img4.png "users page")
+![labels page](/preview/img5.png "labels page")
+![task status page](/preview/img6.png "task status page")

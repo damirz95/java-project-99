@@ -30,7 +30,6 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(path = "/users")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
         var result = userService.getAll();
         return ResponseEntity.ok()
@@ -40,27 +39,21 @@ public class UserController {
 
     @GetMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDTO> show(@PathVariable Long id) {
-        var result = userService.findById(id);
-        return ResponseEntity.ok()
-                .body(result);
+    public UserDTO show(@PathVariable Long id) {
+        return userService.findById(id);
     }
 
     @PostMapping(path = "/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO data) {
-        var result = userService.create(data);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(result);
+    public UserDTO create(@Valid @RequestBody UserCreateDTO data) {
+        return userService.create(data);
     }
 
     @PutMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@userUtils.isAuthor(#id)")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO data) {
-        var result = userService.update(id, data);
-        return ResponseEntity.ok()
-                .body(result);
+    public UserDTO update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO data) {
+        return userService.update(id, data);
     }
 
     @DeleteMapping(path = "/users/{id}")

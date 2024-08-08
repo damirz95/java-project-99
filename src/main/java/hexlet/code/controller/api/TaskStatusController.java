@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-//TODO Привести к единому стилю
 @RestController
 @RequestMapping(path = "/api")
 @AllArgsConstructor
@@ -27,7 +26,6 @@ public class TaskStatusController {
     private final TaskStatusService taskStatusService;
 
     @GetMapping(path = "/task_statuses")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskStatusDTO>> index() {
         var result = taskStatusService.getAll();
         return ResponseEntity.ok()
@@ -37,31 +35,25 @@ public class TaskStatusController {
 
     @GetMapping(path = "/task_statuses/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TaskStatusDTO> show(@PathVariable Long id) {
-        var result = taskStatusService.findById(id);
-        return ResponseEntity.ok()
-                .body(result);
+    public TaskStatusDTO show(@PathVariable Long id) {
+        return taskStatusService.findById(id);
     }
 
     @PostMapping(path = "/task_statuses")
-    public ResponseEntity<TaskStatusDTO> create(@Valid @RequestBody TaskStatusCreateDTO data) {
-        var result = taskStatusService.create(data);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(result);
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO data) {
+        return taskStatusService.create(data);
     }
 
     @PutMapping(path = "/task_statuses/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TaskStatusDTO> update(@PathVariable Long id, @Valid @RequestBody TaskStatusUpdateDTO data) {
-        var result = taskStatusService.update(id, data);
-        return ResponseEntity.ok()
-                .body(result);
+    public TaskStatusDTO update(@PathVariable Long id, @Valid @RequestBody TaskStatusUpdateDTO data) {
+        return  taskStatusService.update(id, data);
     }
 
     @DeleteMapping(path = "/task_statuses/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> destroy(@PathVariable Long id) {
+    public void destroy(@PathVariable Long id) {
         taskStatusService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }
